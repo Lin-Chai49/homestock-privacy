@@ -20,11 +20,17 @@ python3 check.py
 
 入库字段是名称、类别、品牌、规格、数量、单位、最低库存、购买日、到期日、金额、备注和存放位置。金额只进本机图表。记录里有空的 `barcode` 和 `imageUrl`。这一版的表单不填它们。应用不打开相机，不打开相册，也不扫码。
 
-预置 8 个类别和 12 个存放位置。这一版的屏幕不能新增或删除它们。导入可以整表替换。药品类别只是库存分类，应用不做诊断。
+预置 8 个类别：食品、药品、日用品、清洁用品、调味品、罐头、茶饮、其他。预置 12 个存放位置，名称是冰箱·冷藏、冰箱·冷冻、厨房·调料柜、厨房·常温柜、厨房·米柜、厨房·茶柜、药箱、卫生间·储物柜、卫生间·清洁柜、卧室·衣柜、客厅·储物柜、玄关·鞋柜。冷藏和冷冻的说明里写着 0–4°C 和 −18°C，那是预置文字，不是传感器。这一版的屏幕不能新增或删除类别或位置。导入可以整表替换。药品类别只是库存分类，应用不做诊断。
 
-购物清单上的建议去处是写死的标签：食品对应盒马生鲜，日用品对应京东超市，药品对应京东大药房，茶饮对应永辉超市。应用不访问这些商店。
+家庭角色五个固定选项，默认家庭主管，另有家庭主妇/主夫、双职工、独居、多代同堂。主题是家居暖色、深色模式、清新自然。
 
-七个开关——临期提醒、已过期提醒、库存不足提醒、购物清单更新、每周报告、月度总结、免打扰时段——保存在 `settings.notifications`。版本 1.0.0 不发送系统通知，不声明 `POST_NOTIFICATIONS`，首页和任何定时任务都不读这些开关。`quietHours` 写成 22:00–07:00，设置页不能改，也没有任务去用它。
+购物清单上的建议去处是写死的标签：食品、调味品、罐头对应盒马生鲜，日用品、清洁用品对应京东超市，药品对应京东大药房，茶饮、其他对应永辉超市。应用不访问这些商店。
+
+临期分档是固定的：已过期、0–2 天紧急、3–7 天临期、8–30 天关注、超过 30 天新鲜。设置里的临期阈值默认 3 天，只出现在入库页那句“将于过期前 N 天自动通知”里，不改变分档，也不发送通知。
+
+自动补货只在购物清单页点“同步自动补货”时运行。当前数量不高于该物品的最低库存，或近 30 天消耗算出的预计天数小于 7，就在本机清单补一条。没有后台任务。
+
+七个开关——临期提醒、已过期提醒、库存不足提醒、购物清单更新、每周报告、月度总结、免打扰时段——保存在 `settings.notifications`。每周报告默认关，其余默认开。版本 1.0.0 不发送系统通知，不声明 `POST_NOTIFICATIONS`，首页和任何定时任务都不读这些开关。`quietHours` 写成 22:00–07:00，设置页不能改，也没有任务去用它。最低库存比率默认 0.2，自动补货不读它。
 
 设置 → 数据管理：
 
@@ -49,7 +55,7 @@ minSdk 24，targetSdk 35。
 
 ## English
 
-The page matches HomeStock 1.0.0, package `com.chailin.homestock`. Records stay in on-device `HomeStockDB`. The manifest declares `android.permission.INTERNET` so the WebView can open the bundled page. The app source does not make a network request. The seven reminder switches are stored and the app does not post a system notification. It does not declare `POST_NOTIFICATIONS`.
+The page matches HomeStock 1.0.0, package `com.chailin.homestock`. Records stay in on-device `HomeStockDB`. The manifest declares `android.permission.INTERNET` so the WebView can open the bundled page. The app source does not make a network request. The seven reminder switches are stored and the app does not post a system notification. It does not declare `POST_NOTIFICATIONS`. The add-item screen can show “将于过期前 N 天自动通知”; no job sends that notice. Auto-buy runs only when the shopping screen’s 同步自动补货 button is pressed.
 
 Export writes `homestock-backup-YYYY-MM-DD-HHmm.json`, including the nickname and the optional address, and does not upload it. The file is not encrypted. Import replaces all six stores. Demo data is appended. Clear all deletes items, consumptions, and the shopping list, and keeps categories, locations, and settings.
 

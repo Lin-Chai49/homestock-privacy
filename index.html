@@ -4,262 +4,608 @@
 <meta charset="utf-8">
 <title>悦家库存 · 隐私政策 · HomeStock</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="悦家库存 1.0.0 把家庭物资记在本机数据库 HomeStockDB。清单声明 INTERNET，但应用代码不发起网络请求。提醒开关只保存在本机，不发送系统通知。">
+<meta name="description" content="悦家库存 1.0.0 把家庭物资记在本机数据库 HomeStockDB。清单声明 INTERNET，但应用代码不发起网络请求。七个提醒开关只保存在本机，不发送系统通知。">
 <meta name="robots" content="index,follow">
+<link rel="canonical" href="https://lin-chai49.github.io/homestock-privacy/">
 <style>
   :root {
-    --ink: #2a2118;
-    --muted: #6d6256;
-    --line: #eadfce;
-    --paper: #fbf6ee;
-    --card: #fffdf9;
-    --clay: #9a3f22;
-    --clay-soft: #f6e4d8;
-    --header: #2a2118;
+    --band: #9a3412;
+    --ink: #1c1917;
+    --quiet: #4f4944;
+    --paper: #f7f7f6;
+    --sheet: #ffffff;
+    --rule: #e3dfda;
+    --wash: #f8f1ec;
+    --on-band: #fff6f1;
+    --on-band-dim: #ffe4d6;
   }
   * { box-sizing: border-box; }
   html { scroll-behavior: smooth; }
   body {
     margin: 0;
     color: var(--ink);
-    background: var(--header);
-    font-family: "PingFang SC", "Hiragino Sans GB", "Noto Sans SC", "Microsoft YaHei", sans-serif;
+    background: var(--paper);
+    font-family: "PingFang SC", "Hiragino Sans GB", "Noto Sans SC", "Source Han Sans SC", "Microsoft YaHei", sans-serif;
+    font-size: 1.0625rem;
     line-height: 1.75;
   }
-  a { color: var(--clay); text-underline-offset: 0.15em; }
-  a:focus-visible { outline: 2px solid var(--clay); outline-offset: 3px; }
-  header.top { color: #f6efe6; padding: 48px 24px 28px; }
-  .wrap { max-width: 820px; margin: 0 auto; }
+  a { color: var(--band); text-underline-offset: 0.18em; }
+  a:hover { text-decoration-thickness: 2px; }
+  a:focus-visible { outline: 2px solid var(--band); outline-offset: 3px; }
+  .skip {
+    position: absolute;
+    left: 1rem;
+    top: -3rem;
+    background: var(--sheet);
+    color: var(--ink);
+    padding: 0.4rem 0.7rem;
+  }
+  .skip:focus { top: 0.6rem; z-index: 2; }
+  .cover {
+    background: var(--band);
+    color: var(--on-band);
+    padding: clamp(1.75rem, 4vw, 3.25rem) 0 clamp(3.4rem, 6vw, 4.6rem);
+  }
+  .frame {
+    width: min(1040px, calc(100% - 2.5rem));
+    margin-inline: auto;
+  }
+  .mast {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas:
+      "plate mark"
+      "copy mark";
+    column-gap: 2rem;
+    row-gap: 0.35rem;
+    align-items: end;
+  }
+  .plate { grid-area: plate; }
+  .mast-copy { grid-area: copy; min-width: 0; }
+  .mark { grid-area: mark; align-self: end; }
   .plate {
-    display: inline-block;
-    border: 1px solid #e0b089;
-    color: #f3d7c4;
-    letter-spacing: 0.08em;
-    font-size: 12px;
-    padding: 4px 10px;
+    margin: 0;
+    color: var(--on-band-dim);
+    font-size: 0.82rem;
+    letter-spacing: 0.01em;
   }
   h1 {
-    font-family: "Songti SC", "Noto Serif SC", Palatino, "Palatino Linotype", serif;
+    font-family: "Songti SC", "STSong", "Noto Serif SC", "Source Han Serif SC", Palatino, "Palatino Linotype", serif;
     font-weight: 600;
-    font-size: clamp(2rem, 5vw, 3.05rem);
-    line-height: 1.15;
-    margin: 14px 0 8px;
+    font-size: clamp(2.5rem, 6vw, 4.6rem);
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    margin: 0.35rem 0 0.7rem;
+    text-wrap: balance;
   }
-  .lede { max-width: 40rem; color: #e4d5c8; margin: 0; }
-  .facts {
+  h1 span {
+    display: block;
+    margin-top: 0.18em;
+    font-size: 0.58em;
+    font-weight: 500;
+    letter-spacing: 0;
+  }
+  .lede {
+    max-width: 38rem;
+    margin: 0;
+    color: var(--on-band);
+    line-height: 1.8;
+    text-wrap: pretty;
+  }
+  .lang-jump {
+    margin: 1rem 0 0;
+    font-size: 0.95rem;
+  }
+  .lang-jump a { color: var(--on-band); }
+  .mark {
+    width: 4.6rem;
+    height: 4.6rem;
+    border: 1px solid rgba(255, 246, 241, 0.7);
+    display: grid;
+    place-items: center;
+    text-align: center;
+    font-family: "Songti SC", "STSong", "Noto Serif SC", serif;
+    line-height: 1.15;
+    animation: settle 700ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+  .mark b { display: block; font-size: 1.35rem; font-weight: 600; }
+  .mark small { display: block; margin-top: 0.2rem; font-size: 0.72rem; letter-spacing: 0.08em; }
+  @keyframes settle {
+    from { transform: translateY(8px); }
+    to { transform: none; }
+  }
+  .sheet-wrap { margin-top: -2.4rem; }
+  .sheet {
+    background: var(--sheet);
+    border: 1px solid var(--rule);
+    box-shadow: 0 1px 0 rgba(28, 25, 23, 0.04);
+  }
+  .specs {
+    display: grid;
+    grid-template-columns: 8.5rem minmax(0, 1fr);
+    margin: 0;
+  }
+  .specs div {
+    display: grid;
+    grid-template-columns: subgrid;
+    grid-column: 1 / -1;
+    gap: 0.35rem 1.25rem;
+    padding: 0.85rem 1.15rem;
+    border-top: 1px solid var(--rule);
+  }
+  .specs div:first-child { border-top: 0; }
+  .specs dt {
+    margin: 0;
+    font-family: "Songti SC", "STSong", "Noto Serif SC", serif;
+    font-weight: 600;
+  }
+  .specs dd { margin: 0; color: var(--quiet); text-wrap: pretty; }
+  .book {
+    display: grid;
+    grid-template-columns: 12.5rem minmax(0, 68ch);
+    gap: clamp(1.25rem, 3vw, 2.75rem);
+    justify-content: center;
+    padding: clamp(1.75rem, 4vw, 3rem) 0 clamp(3rem, 6vw, 5rem);
+  }
+  nav {
+    position: sticky;
+    top: 1rem;
+    align-self: start;
+    max-height: calc(100vh - 2rem);
+    overflow: auto;
+    padding-top: 0.2rem;
+  }
+  nav p {
+    margin: 0 0 0.55rem;
+    font-family: "Songti SC", "STSong", "Noto Serif SC", serif;
+    font-size: 1.05rem;
+  }
+  nav ol { list-style: none; margin: 0; padding: 0; }
+  nav li { margin: 0.18rem 0; }
+  nav a {
+    color: var(--ink);
+    text-decoration: none;
+    font-size: 0.92rem;
+    line-height: 1.45;
+  }
+  nav a:hover { color: var(--band); text-decoration: underline; }
+  nav .n {
+    display: inline-block;
+    min-width: 2.6em;
+    margin-right: 0.15em;
+    white-space: nowrap;
+    color: var(--band);
+    font-family: "Songti SC", "STSong", "Noto Serif SC", serif;
+  }
+  h2, h3 {
+    font-family: "Songti SC", "STSong", "Noto Serif SC", "Source Han Serif SC", Palatino, serif;
+    font-weight: 600;
+    text-wrap: balance;
+    scroll-margin-top: 1rem;
+  }
+  h2 { font-size: clamp(1.45rem, 2vw, 1.8rem); line-height: 1.25; margin: 2.8rem 0 0.7rem; }
+  h2 .n { color: var(--band); margin-right: 0.45em; }
+  h3 { font-size: 1.2rem; margin: 1.6rem 0 0.4rem; }
+  p, li, td, dd { text-wrap: pretty; }
+  p { margin: 0.65rem 0; }
+  article { min-width: 0; }
+  ul, ol { margin: 0.4rem 0 0.9rem; padding-left: 1.2rem; }
+  li { margin: 0.28rem 0; }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.98rem;
+    margin: 0.8rem 0 1rem;
+  }
+  th, td {
+    text-align: left;
+    vertical-align: top;
+    padding: 0.62rem 0.75rem 0.62rem 0;
+    border-bottom: 1px solid var(--rule);
+  }
+  th {
+    font-family: "Songti SC", "STSong", "Noto Serif SC", serif;
+    font-weight: 600;
+    color: var(--ink);
+    border-bottom-color: var(--band);
+    font-size: 0.98rem;
+  }
+  code {
+    font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+    font-size: 0.86em;
+    background: var(--wash);
+    padding: 0.05em 0.28em;
+    overflow-wrap: break-word;
+  }
+  .bound {
+    border: 1px solid var(--band);
+    background: var(--wash);
+    padding: 0.85rem 1rem 0.35rem;
+    margin: 1.15rem 0 1.3rem;
+  }
+  .bound p:first-child {
+    margin-top: 0;
+    font-family: "Songti SC", "STSong", "Noto Serif SC", serif;
+    color: var(--band);
+  }
+  figure.path {
+    margin: 1.3rem 0 1.5rem;
+    padding: 0;
+  }
+  figure.path figcaption {
+    font-family: "Songti SC", "STSong", "Noto Serif SC", serif;
+    margin-bottom: 0.7rem;
+  }
+  .steps {
+    display: grid;
+    grid-template-columns: 1fr;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    border: 1px solid var(--rule);
+    background: var(--sheet);
+  }
+  .steps li {
+    margin: 0;
+    display: grid;
+    grid-template-columns: 9.5rem minmax(0, 1fr);
+    gap: 0.35rem 1rem;
+    align-items: baseline;
+    padding: 0.75rem 0.9rem;
+    border-top: 1px solid var(--rule);
+  }
+  .steps li:first-child { border-top: 0; }
+  .steps li b { font-size: 0.98rem; }
+  .steps li span { color: var(--quiet); }
+  .steps .stay { background: var(--wash); }
+  .places, .pills {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 12px;
-    margin-top: 28px;
+    gap: 0.15rem 1.25rem;
+    list-style: none;
+    padding: 0;
+    margin: 0.5rem 0 1rem;
   }
-  .fact {
-    background: rgba(255, 253, 249, 0.06);
-    border: 1px solid rgba(243, 215, 196, 0.28);
-    padding: 14px 16px;
+  .places li, .pills li { margin: 0; }
+  .places b { font-weight: 600; }
+  .quiet { color: var(--quiet); }
+  #en {
+    margin-top: 3.2rem;
+    padding-top: 0.4rem;
+    border-top: 1px solid var(--band);
   }
-  .fact b { display: block; color: #f6e4d8; font-size: 0.95rem; }
-  .fact span { color: #d9c9bb; font-size: 0.88rem; }
-  main {
-    background: var(--paper);
-    border-top: 4px solid var(--clay);
-    padding: 8px 0 64px;
-  }
-  nav.toc {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 8px 14px;
-    padding: 22px 0 8px;
+  footer {
+    background: var(--ink);
+    color: #f3ece6;
+    padding: 1.6rem 0 2.2rem;
     font-size: 0.92rem;
   }
-  h2 {
-    font-family: "Songti SC", "Noto Serif SC", Palatino, serif;
-    font-size: 1.45rem;
-    margin: 2.2rem 0 0.6rem;
-    padding-top: 0.4rem;
+  footer a { color: #ffe4d6; }
+  footer p { margin: 0.2rem 0; }
+  @media (max-width: 860px) {
+    .book { grid-template-columns: 1fr; padding-top: 1.4rem; }
+    nav { position: static; max-height: none; overflow: visible; }
+    nav ol { display: flex; flex-wrap: wrap; gap: 0.35rem 0.9rem; }
+    nav li { margin: 0; }
+    .steps li { grid-template-columns: 1fr; gap: 0.1rem; }
   }
-  h3 { font-size: 1.05rem; margin: 1.4rem 0 0.4rem; }
-  p { margin: 0.6rem 0; }
-  ul, ol { margin: 0.4rem 0 0.8rem; padding-left: 1.3rem; }
-  li { margin: 0.25rem 0; }
-  table { width: 100%; border-collapse: collapse; font-size: 0.94rem; background: var(--card); }
-  th, td { text-align: left; vertical-align: top; padding: 10px 12px; border-bottom: 1px solid var(--line); }
-  th { color: var(--muted); font-weight: 600; font-size: 0.78rem; letter-spacing: 0.04em; background: #f4ebe1; }
-  code { font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace; font-size: 0.88em; background: var(--clay-soft); padding: 0 4px; }
-  .note {
-    background: var(--card);
-    border-left: 3px solid var(--clay);
-    padding: 10px 14px;
-    margin: 14px 0;
-  }
-  #en { border-top: 1px solid var(--line); margin-top: 48px; }
-  footer.colophon { color: #cbbbaa; padding: 28px 24px 48px; font-size: 0.88rem; }
-  @media (max-width: 700px) {
-    .facts { grid-template-columns: 1fr; }
-    header.top { padding-top: 32px; }
+  @media (max-width: 640px) {
+    .frame { width: min(1040px, calc(100% - 1.5rem)); }
+    .mast {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      grid-template-areas:
+        "plate mark"
+        "copy copy";
+      align-items: center;
+      gap: 0.35rem 0.75rem;
+    }
+    .plate { grid-area: plate; padding-right: 0; }
+    .mast-copy { grid-area: copy; }
+    .mark {
+      grid-area: mark;
+      position: static;
+      width: 3.6rem;
+      height: 3.6rem;
+    }
+    .specs { grid-template-columns: 1fr; }
+    .specs div { grid-template-columns: 1fr; gap: 0.1rem; }
+    .places, .pills { grid-template-columns: 1fr; }
+    h1 { font-size: clamp(2.15rem, 12vw, 3rem); }
     table { display: block; overflow-x: auto; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    .mark { animation: none; }
+  }
+  @media print {
+    .cover, footer { background: white; color: black; }
+    .lede, .plate, .lang-jump a { color: black; }
+    nav { display: none; }
+    .book { display: block; }
+    .sheet { box-shadow: none; }
   }
 </style>
 </head>
 <body>
-<header class="top">
-  <div class="wrap">
-    <div class="plate">com.chailin.homestock · 1.0.0 · versionCode 2</div>
-    <h1>悦家库存<br>隐私政策</h1>
-    <p class="lede">这是一款记在你自己手机里的家庭物资账。下面按版本 1.0.0 的实际行为说明：什么留在本机数据库 HomeStockDB，什么会写成一个由你保存的 JSON 文件，哪些设置看起来像提醒、实际上不发送系统通知。</p>
-    <div class="facts">
-      <div class="fact"><b>数据库只在本机</b><span>IndexedDB 名称为 HomeStockDB，版本 1。开发者不接收里面的内容。</span></div>
-      <div class="fact"><b>清单里有 INTERNET</b><span>权限是 android.permission.INTERNET。应用代码不发起网络请求，它只让 WebView 打开随包页面。</span></div>
-      <div class="fact"><b>提醒开关不发通知</b><span>七个开关写进设置记录。这一版不发送系统通知，也不声明 POST_NOTIFICATIONS。</span></div>
-      <div class="fact"><b>系统云备份是关的</b><span>allowBackup 为 false。云备份和换机传输都排除应用数据。卸载不会删掉你已经导出的 JSON。</span></div>
+<a class="skip" href="#zh">跳到正文</a>
+<header class="cover">
+  <div class="frame mast">
+    <p class="plate">com.chailin.homestock · 1.0.0 · versionCode 2</p>
+    <div class="mast-copy">
+      <h1>悦家库存<span>隐私政策</span></h1>
+      <p class="lede">这是记在你自己手机里的家庭物资账。下面按版本 1.0.0 的代码说明：什么留在本机数据库 HomeStockDB，什么只有在你导出时才变成 JSON 文件，哪些开关看起来像提醒、实际上不发送系统通知。</p>
+      <p class="lang-jump"><a href="#en">English</a> · 生效 2026-05-13 · 按代码重写于 2026-11-01</p>
     </div>
+    <div class="mark" aria-hidden="true"><b>本机</b><small>1.0.0</small></div>
   </div>
 </header>
-<main>
-  <div class="wrap">
-    <nav class="toc" aria-label="目录">
-      <a href="#scope">对应版本</a>
-      <a href="#meaning">“不收集”</a>
-      <a href="#db">数据库</a>
-      <a href="#profile">设置里的内容</a>
-      <a href="#items">物品与清单</a>
-      <a href="#reminders">提醒开关</a>
-      <a href="#calc">本机计算</a>
-      <a href="#files">导出与清空</a>
-      <a href="#perms">权限</a>
-      <a href="#libs">随包的库</a>
-      <a href="#children">儿童</a>
-      <a href="#limits">安全边界</a>
-      <a href="#changes">变更</a>
-      <a href="#contact">联系</a>
-      <a href="#en">English</a>
-    </nav>
 
+<div class="frame sheet-wrap">
+  <div class="sheet">
+    <dl class="specs">
+      <div>
+        <dt>数据库</dt>
+        <dd>IndexedDB 名称为 HomeStockDB，版本 1。开发者不接收里面的内容。</dd>
+      </div>
+      <div>
+        <dt>权限</dt>
+        <dd>清单只有 android.permission.INTERNET。应用代码不发起网络请求，它只让 WebView 打开随包页面。</dd>
+      </div>
+      <div>
+        <dt>提醒</dt>
+        <dd>七个开关写进设置记录。这一版不发送系统通知，也不声明 POST_NOTIFICATIONS。</dd>
+      </div>
+      <div>
+        <dt>离开手机</dt>
+        <dd>只有你导出的 JSON。allowBackup 为 false。云备份和换机传输都排除应用数据。卸载不会删掉已经导出的文件。</dd>
+      </div>
+    </dl>
+  </div>
+</div>
+
+<div class="frame book">
+  <nav aria-label="目录">
+    <p>目录</p>
+    <ol>
+      <li><a href="#scope"><span class="n">一</span>对应版本</a></li>
+      <li><a href="#meaning"><span class="n">二</span>不收集</a></li>
+      <li><a href="#db"><span class="n">三</span>数据库</a></li>
+      <li><a href="#profile"><span class="n">四</span>设置</a></li>
+      <li><a href="#items"><span class="n">五</span>物品与清单</a></li>
+      <li><a href="#reminders"><span class="n">六</span>提醒开关</a></li>
+      <li><a href="#calc"><span class="n">七</span>本机计算</a></li>
+      <li><a href="#files"><span class="n">八</span>导出与清空</a></li>
+      <li><a href="#perms"><span class="n">九</span>权限</a></li>
+      <li><a href="#libs"><span class="n">十</span>随包的库</a></li>
+      <li><a href="#children"><span class="n">十一</span>儿童</a></li>
+      <li><a href="#limits"><span class="n">十二</span>安全边界</a></li>
+      <li><a href="#changes"><span class="n">十三</span>变更</a></li>
+      <li><a href="#contact"><span class="n">十四</span>联系</a></li>
+      <li><a href="#en"><span class="n">英</span>English</a></li>
+    </ol>
+  </nav>
+
+  <main>
     <article id="zh" lang="zh-CN">
-      <h2 id="scope">1. 这份说明对应哪一版</h2>
+      <h2 id="scope"><span class="n">一</span>这份说明对应哪一版</h2>
       <p>适用应用是悦家库存 HomeStock，包名 <code>com.chailin.homestock</code>，versionName <code>1.0.0</code>，versionCode 2。最低系统为 Android 7.0（minSdk 24），目标系统为 targetSdk 35。著作权人是柴琳。本页地址是 <a href="https://lin-chai49.github.io/homestock-privacy/">https://lin-chai49.github.io/homestock-privacy/</a>。</p>
-      <p>政策自 2026-05-13 起适用。2026-11-01 按这一版代码重写了正文，去掉原先写得过满、应用里并没有的说法。</p>
+      <p>政策自 2026-05-13 起适用。2026-11-01 按这一版代码重写了正文，去掉原先写得过满、应用里并没有的说法。页面不加载第三方字体，也不向本页以外的地址发请求。</p>
 
-      <h2 id="meaning">2. “不收集”是什么意思</h2>
-      <p>这里的“不收集”是指开发者收不到。应用没有账号，没有登录，也没有把数据库上传到服务器。你在屏幕上输入的内容仍然会留在这台手机的 HomeStockDB 里。导出 JSON 之后，那个文件在你保存它的地方，应用不再管它。</p>
-      <div class="note">应用“关于”里写着“所有数据本地存储，零数据采集，无网络请求”。这句话指的是开发者收不到、应用代码不去请求网络。它不表示手机上没有一份本地数据库。</div>
+      <h2 id="meaning"><span class="n">二</span>“不收集”是什么意思</h2>
+      <p>这里的“不收集”是指开发者收不到。应用没有账号，没有登录，也没有把数据库上传到服务器。你在屏幕上输入的内容仍然会留在这台手机的 HomeStockDB 里。</p>
+      <figure class="path">
+        <figcaption>一条记录会停在哪里</figcaption>
+        <ol class="steps">
+          <li><b>你键入的字</b><span>昵称、住址、药名、金额、备注。还没有离开这台屏幕。</span></li>
+          <li class="stay"><b>HomeStockDB</b><span>写进这台手机的数据库。开发者读不到。</span></li>
+          <li><b>JSON 文件</b><span>只有你点导出才生成。文件不加密，应用不上传。</span></li>
+        </ol>
+      </figure>
+      <div class="bound">
+        <p>关于页上的那句话</p>
+        <p>设置页底部和“我的”页写着本地存储。设置里的原文是“所有数据本地存储，零数据采集，无网络请求”。“我的”页的角标写着“本地存储 · 零隐私顾虑”。这两句指的是开发者收不到、应用代码不去请求网络。它不表示手机上没有一份本地数据库。</p>
+      </div>
 
-      <h2 id="db">3. 留在手机里的数据库</h2>
-      <p>第一次打开时，应用创建 IndexedDB 数据库 <code>HomeStockDB</code>，版本 1。同一来源下只有这个应用的 WebView 能读写它。其他应用读不到这份库。库里有六个对象存储：</p>
+      <h2 id="db"><span class="n">三</span>留在手机里的数据库</h2>
+      <p>第一次打开时，应用创建 IndexedDB 数据库 <code>HomeStockDB</code>，版本 1，并写入下面的预置类别、预置位置和一条默认设置。同一来源下只有这个应用的 WebView 能读写它。其他应用读不到这份库。库里有六个对象存储：</p>
       <table>
         <tr><th>存储</th><th>里面有什么</th></tr>
-        <tr><td><code>items</code></td><td>一件物资一条。见下一节字段。</td></tr>
-        <tr><td><code>categories</code></td><td>预置 8 个类别：食品、药品、日用品、清洁用品、调味品、罐头、茶饮、其他。设置页只列出它们。这一版的屏幕不能新增或删除类别。导入备份可以整表替换。</td></tr>
-        <tr><td><code>locations</code></td><td>预置 12 个存放位置，例如冷藏、冷冻、药箱、卫生间柜。这是房间和柜子的名字，不是 GPS。这一版的屏幕不能新增或删除位置。导入备份可以整表替换。</td></tr>
-        <tr><td><code>consumptions</code></td><td>消耗记录：物品、数量、场景、备注、时间。场景是你选的早餐、午餐、日常等标签，不是传感器。</td></tr>
-        <tr><td><code>shoppingList</code></td><td>购物清单：名称、类别、数量、估计价格、建议去处的文字、来源、是否买完。</td></tr>
-        <tr><td><code>settings</code></td><td>一条键为 <code>app</code> 的设置。见第 4 节。</td></tr>
+        <tr><td><code>items</code></td><td>一件物资一条。字段见第五节。新建时状态是 active。打开首页时，已经过了到期日且仍为 active 的物品会被写成 expired。把数量记到 0 时写成 consumed。</td></tr>
+        <tr><td><code>categories</code></td><td>预置 8 个类别，见下。设置页只列出它们。这一版的屏幕不能新增或删除类别。导入备份可以整表替换。若库里已有同键类别，再次启动不会覆盖它。</td></tr>
+        <tr><td><code>locations</code></td><td>预置 12 个存放位置。这是房间和柜子的名字，不是 GPS。这一版的屏幕不能新增或删除位置。导入备份可以整表替换。</td></tr>
+        <tr><td><code>consumptions</code></td><td>消耗记录：物品、数量、场景、备注、时间。数量在计算日均消耗时取绝对值。</td></tr>
+        <tr><td><code>shoppingList</code></td><td>购物清单：名称、类别、数量、估计价格、建议去处的文字、来源（手动或自动）、是否买完。</td></tr>
+        <tr><td><code>settings</code></td><td>一条键为 <code>app</code> 的设置。见第四节。</td></tr>
       </table>
-      <p>如果你把一件东西记在“药品”下面，药名、效期、数量和备注都在这台手机的 <code>items</code> 里。开发者收不到，应用也不据此做诊断。</p>
 
-      <h2 id="profile">4. 你会填进设置里的内容</h2>
-      <p>引导页要求填写昵称，2 到 20 个字符，填完才能进入首页。昵称会显示在首页和“更多”页。设置里还可以保存这些内容，全部在 <code>settings</code> 那一条记录里：</p>
+      <h3>八个类别</h3>
+      <ul class="pills">
+        <li>食品</li>
+        <li>药品</li>
+        <li>日用品</li>
+        <li>清洁用品</li>
+        <li>调味品</li>
+        <li>罐头</li>
+        <li>茶饮</li>
+        <li>其他</li>
+      </ul>
+      <p>如果你把一件东西记在“药品”下面，药名、效期、数量和备注都在这台手机的 <code>items</code> 里。开发者收不到，应用也不据此做诊断。药品只是库存分类。</p>
+
+      <h3>十二个存放位置</h3>
+      <p>每条位置带一段写好的说明。冷藏写成“冰箱主仓 · 0-4°C”，冷冻写成“冰箱冷冻层 · -18°C”。这是预置文字，不是温度计，也不是传感器。</p>
+      <ul class="places">
+        <li><b>冰箱·冷藏</b> <span class="quiet">冰箱主仓</span></li>
+        <li><b>冰箱·冷冻</b> <span class="quiet">冷冻层</span></li>
+        <li><b>厨房·调料柜</b> <span class="quiet">灶台旁</span></li>
+        <li><b>厨房·常温柜</b> <span class="quiet">厨房主柜</span></li>
+        <li><b>厨房·米柜</b> <span class="quiet">厨房阳台</span></li>
+        <li><b>厨房·茶柜</b> <span class="quiet">厨房上柜</span></li>
+        <li><b>药箱</b> <span class="quiet">客厅药箱</span></li>
+        <li><b>卫生间·储物柜</b> <span class="quiet">镜柜下方</span></li>
+        <li><b>卫生间·清洁柜</b> <span class="quiet">卫生间墙柜</span></li>
+        <li><b>卧室·衣柜</b> <span class="quiet">衣柜抽屉</span></li>
+        <li><b>客厅·储物柜</b> <span class="quiet">电视柜</span></li>
+        <li><b>玄关·鞋柜</b> <span class="quiet">门厅鞋柜</span></li>
+      </ul>
+
+      <h2 id="profile"><span class="n">四</span>你会填进设置里的内容</h2>
+      <p>引导页要求填写昵称，2 到 20 个字符，填完才能进入首页。昵称会显示在首页和“我的”页。“我的”页同时显示家庭角色和家庭人数。全部在 <code>settings</code> 那一条记录里：</p>
       <table>
         <tr><th>字段</th><th>你看到的</th></tr>
         <tr><td>昵称</td><td>必填才能离开引导页。最长 20 个字符。</td></tr>
-        <tr><td>家庭角色</td><td>五个固定选项之一，默认“家庭主管”。</td></tr>
+        <tr><td>家庭角色</td><td>五个固定选项：家庭主管、家庭主妇/主夫、双职工、独居、多代同堂。默认“家庭主管”。</td></tr>
         <tr><td>家庭人数</td><td>数字，默认 3，范围 1 到 20。</td></tr>
-        <tr><td>家庭住址</td><td>选填，最长 50 个字符。这是你键入的文字，不是定位。应用不声明定位权限，也不读 GPS。</td></tr>
-        <tr><td>显示</td><td>主题（家居暖色、深色模式、清新自然）、列表样式、默认排序、临期阈值天数、最低库存比率。</td></tr>
-        <tr><td>提醒开关</td><td>见第 6 节。只保存，不发送。</td></tr>
+        <tr><td>家庭住址</td><td>选填，最长 50 个字符，占位文字是“选填”。这是你键入的文字，不是定位。应用不声明定位权限，也不读 GPS。</td></tr>
+        <tr><td>主题</td><td>家居暖色、深色模式、清新自然。默认家居暖色。引导页和设置页都能选。它只改本机配色。</td></tr>
+        <tr><td>列表与排序</td><td>列表样式为货架式、列表式、紧凑式，默认货架式。排序为到期日升序、到期日降序、名称、数量从多到少、最近更新，默认到期日升序。</td></tr>
+        <tr><td>临期阈值</td><td>默认 3 天，设置里可改成 1 到 30。它会出现在入库页的一句提示里。见第六节。画面上的临期分档不读这个数。</td></tr>
+        <tr><td>最低库存比率</td><td>默认 0.2，可改范围 0.05 到 0.5，步进 0.05。这一版的自动补货不读它，读的是每件物品自己的最低库存。</td></tr>
+        <tr><td>提醒开关</td><td>见第六节。只保存，不发送。</td></tr>
         <tr><td><code>quietHours</code></td><td>随默认设置写成 22:00 到 07:00。设置页不能改这两个钟点。因为没有提醒任务，这两个钟点也不会被用到。</td></tr>
+        <tr><td>字号和日期格式</td><td>默认字号 <code>md</code>，日期格式 <code>YYYY-MM-DD</code>。这一版的设置屏幕不编辑它们。</td></tr>
         <tr><td><code>onboardedAt</code></td><td>完成引导的本机时间戳。</td></tr>
       </table>
-      <p>设置里还有字号和日期格式的默认值。这一版的设置屏幕不编辑它们。</p>
 
-      <h2 id="items">5. 物品、消耗和购物清单</h2>
-      <p>入库屏幕让你填写：名称、类别、品牌、规格、数量、单位、最低库存、购买日期、到期日期、购买金额、备注、存放位置。购买金额只用于本机上的花费图表，不是支付。</p>
+      <h2 id="items"><span class="n">五</span>物品、消耗和购物清单</h2>
+      <p>入库屏幕让你填写：名称、类别、品牌、规格、数量、单位、最低库存、购买日期、到期日期、购买金额、备注、存放位置。购买金额只用于本机上的花费图表，不是支付。单位是固定选项，例如盒、瓶、袋、枚、件、颗、罐、杯、支、提、克、毫升、包。默认最低库存是 1。</p>
+      <p>入库页还有四个填表示例：乳制品、蔬果、烘焙、药品。点一下会填上类别、存放位置、单位和到期日，仍然只写进本机。</p>
       <p>每条物品记录里还有 <code>barcode</code> 和 <code>imageUrl</code> 两个空字段。这一版的入库屏幕不填写它们。应用不打开相机，不打开相册，也不扫码。不要把这两个字段理解成已经在读你的照片。</p>
-      <p>消耗一条记录时，应用记下物品名称、数量、你选的场景和可选备注，以及当时的时间。购物清单里的“建议去处”是写死在应用里的类别标签，例如食品对应“盒马生鲜”，日用品对应“京东超市”，药品对应“京东大药房”，茶饮对应“永辉超市”。这不是在查询这些商店，也没有打开它们的网站。</p>
+      <p>消耗一条记录时，应用记下物品名称、数量、你选的场景和可选备注，以及当时的时间。场景是七个固定标签：早餐、上午、午餐、下午、晚餐、睡前、日常。不是传感器。</p>
+      <p>购物清单里的“建议去处”是写死在应用里的类别标签，不是在查询这些商店，也没有打开它们的网站。</p>
+      <table>
+        <tr><th>类别</th><th>建议去处的文字</th></tr>
+        <tr><td>食品、调味品、罐头</td><td>盒马生鲜</td></tr>
+        <tr><td>日用品、清洁用品</td><td>京东超市</td></tr>
+        <tr><td>药品</td><td>京东大药房</td></tr>
+        <tr><td>茶饮、其他</td><td>永辉超市</td></tr>
+      </table>
 
-      <h2 id="reminders">6. 提醒开关</h2>
-      <p>设置页“通知与提醒”有七个开关：临期提醒、已过期提醒、库存不足提醒、购物清单更新、每周报告（周一上午）、月度总结（每月初）、免打扰时段（22:00-07:00）。点“保存修改”后，它们写进 <code>settings.notifications</code>。</p>
-      <div class="note">版本 1.0.0 不发送系统通知。没有定时任务去读这七个开关，首页也不读它们。应用不声明 <code>POST_NOTIFICATIONS</code>。免打扰时段因此也不会生效。开关留在数据库里，只是设置值。</div>
+      <h2 id="reminders"><span class="n">六</span>提醒开关</h2>
+      <p>设置页“通知与提醒”有七个开关。点“保存修改”后，它们写进 <code>settings.notifications</code>。默认值如下，每周报告默认是关的，其余六个默认是开的：</p>
+      <table>
+        <tr><th>开关</th><th>默认</th></tr>
+        <tr><td>临期提醒</td><td>开</td></tr>
+        <tr><td>已过期提醒</td><td>开</td></tr>
+        <tr><td>库存不足提醒</td><td>开</td></tr>
+        <tr><td>购物清单更新</td><td>开</td></tr>
+        <tr><td>每周报告（周一上午）</td><td>关</td></tr>
+        <tr><td>月度总结（每月初）</td><td>开</td></tr>
+        <tr><td>免打扰时段（22:00-07:00）</td><td>开。钟点不能改。</td></tr>
+      </table>
+      <div class="bound">
+        <p>这些开关不发通知</p>
+        <p>版本 1.0.0 不发送系统通知。没有定时任务去读这七个开关，首页也不读它们。应用不声明 <code>POST_NOTIFICATIONS</code>。免打扰时段因此也不会生效。开关留在数据库里，只是设置值。</p>
+        <p>入库页在已选存放位置时会显示一句“将于过期前 N 天自动通知”。N 是上面的临期阈值，默认 3。这句话只是屏幕上的提示。没有任何任务按这个天数去发送通知。</p>
+      </div>
 
-      <h2 id="calc">7. 本机计算</h2>
+      <h2 id="calc"><span class="n">七</span>本机计算</h2>
       <p>临期分档、用近 30 天消耗估计还能用几天、是否放入购物清单、花费和浪费图表，都在这台手机上算。应用代码里没有 <code>fetch</code>、XHR、WebSocket 或上报接口。图表库不会为了这些图去下载地图或统计脚本。</p>
+      <p>到期日按本地日历的 0 点计算还剩几天，然后分成五档。分档用的是固定界限，不读设置里的临期阈值：</p>
+      <table>
+        <tr><th>还剩</th><th>画面上的字</th></tr>
+        <tr><td>已经过了到期日</td><td>已过期</td></tr>
+        <tr><td>0 到 2 天</td><td>紧急</td></tr>
+        <tr><td>3 到 7 天</td><td>临期</td></tr>
+        <tr><td>8 到 30 天</td><td>关注</td></tr>
+        <tr><td>超过 30 天，或没有有效日期</td><td>新鲜</td></tr>
+      </table>
+      <p>估计“还能用几天”时，应用把最近 30 天消耗数量的绝对值加总，再除以 30，得到日均消耗。当前数量除以这个日均，就是预计天数。这 30 天里没有消耗时，预计天数不作有限数字，单凭这一条不会触发自动补货。</p>
+      <p>自动补货不是后台任务。购物清单页有一个“同步自动补货”按钮，点下去才跑。对状态为 active 的物品，当前数量小于或等于该物品的最低库存，或者预计天数是有限数字并且小于 7，就会在购物清单里补一条。来源记为 auto，建议去处用上面那张表，估计价格用这件物品的金额。同名且未买完的条目不会重复添加。应用不联系那些商店。</p>
 
-      <h2 id="files">8. 导出、导入、演示数据和清空</h2>
+      <h2 id="files"><span class="n">八</span>导出、导入、演示数据和清空</h2>
       <p>这些按钮都在“设置 → 数据管理”。</p>
       <table>
         <tr><th>操作</th><th>实际做什么</th></tr>
-        <tr><td>导出数据（JSON）</td><td>在内存里拼一份 JSON，包含 <code>schema</code>（值为 HomeStockDB）、<code>version</code>、<code>exportedAt</code>，以及六个存储的全部行，含昵称和家庭住址。然后开始下载，文件名形如 <code>homestock-backup-YYYY-MM-DD-HHmm.json</code>。应用不上传这个文件。你若把它存进“下载”或其他应用，那份副本不受本应用卸载的影响。</td></tr>
-        <tr><td>导入备份</td><td>你从系统文件选择器选一个 JSON。schema 不是 HomeStockDB 就停止，并提示格式不正确。通过后，应用先清空六个存储，再写入文件。这会覆盖物品，也会覆盖类别、位置和设置，包括昵称与住址。导入前有一次确认。</td></tr>
-        <tr><td>加载演示数据</td><td>在现有数据后面追加大约 20 件示例物品、对应的消耗记录和几条购物清单。不先删除你已有的物品。确认框里的“追加”和代码一致。</td></tr>
-        <tr><td>清空全部数据</td><td>连续确认两次后，删除物品、消耗记录和购物清单。保留类别、位置和设置。昵称、家庭角色、家庭人数和家庭住址还在。</td></tr>
+        <tr><td>导出数据（JSON）</td><td>在内存里拼一份 JSON，包含 <code>schema</code>（值为 HomeStockDB）、<code>version</code>（1）、<code>exportedAt</code>，以及六个存储的全部行，含昵称和家庭住址。然后开始下载，文件名形如 <code>homestock-backup-YYYY-MM-DD-HHmm.json</code>。应用不上传这个文件。你若把它存进“下载”或其他应用，那份副本不受本应用卸载的影响。</td></tr>
+        <tr><td>导入备份</td><td>你从系统文件选择器选一个 JSON。先有一次确认：“导入将覆盖所有现有数据”。schema 不是 HomeStockDB 就停止，并提示备份文件格式不正确。通过后，应用先清空六个存储，再写入文件。这会覆盖物品，也会覆盖类别、位置和设置，包括昵称与住址。</td></tr>
+        <tr><td>加载演示数据</td><td>确认框写的是向当前数据库追加约 20 件示例物品和消耗记录。代码在现有数据后面追加示例物品、对应的消耗记录和几条购物清单，不先调用清空。确认框里的“追加”和代码一致。</td></tr>
+        <tr><td>清空全部数据</td><td>按钮上的短句写着删除物品、消耗、购物记录，并保留类别与位置。连续确认两次后，删除物品、消耗记录和购物清单。保留类别、位置和设置。昵称、家庭角色、家庭人数和家庭住址还在。第二次确认写明该操作无法撤销。</td></tr>
       </table>
       <p>导出的 JSON 在 1.0.0 里不加密。谁能打开那个文件，谁就能读到物资清单和你填过的住址。</p>
 
-      <h2 id="perms">9. 权限和系统备份</h2>
-      <p>清单只声明一项权限：<code>android.permission.INTERNET</code>。Capacitor 用 https 方案把随包的页面交给 WebView，这项权限是为了那次本机加载。应用同时声明 <code>usesCleartextTraffic="false"</code>，并且不允许混合内容。运行时没有明文请求，也没有应用自己发出的网络请求。</p>
+      <h2 id="perms"><span class="n">九</span>权限和系统备份</h2>
+      <p>清单只声明一项权限：<code>android.permission.INTERNET</code>。Capacitor 用 https 方案把随包的页面交给 WebView（<code>androidScheme</code> 为 https），这项权限是为了那次本机加载。应用同时声明 <code>usesCleartextTraffic="false"</code>，并且不允许混合内容。运行时没有明文请求，也没有应用自己发出的网络请求。</p>
       <p>清单不声明相机、麦克风、定位、电话、短信、通讯录、外部存储读写、通知或生物识别。应用代码不读剪贴板。</p>
       <p><code>android:allowBackup="false"</code>，<code>android:fullBackupContent="false"</code>。自定义 <code>dataExtractionRules</code> 把 root、database、file、sharedpref、external 从云备份和换机传输里都排除。系统的自动云备份不会带走 HomeStockDB。</p>
-      <p>工程里有一个不导出的 FileProvider，authority 是 <code>com.chailin.homestock.fileprovider</code>。这一版的屏幕不用它把文件交给别的应用。导出走的是上面的 JSON 下载。</p>
+      <p>工程里有一个不导出的 FileProvider，authority 是 <code>com.chailin.homestock.fileprovider</code>。路径文件里有 <code>external-path</code> 和 <code>cache-path</code>，两条的 path 都写成一个点，也就是不收窄到某个子目录。这一版的屏幕不用它把文件交给别的应用。导出走的是上面的 JSON 下载。清单也没有声明外部存储权限。</p>
       <p>卸载应用会清掉这个应用的 WebView 存储，包括 HomeStockDB。已经下载到别处的 JSON 不会跟着消失。</p>
 
-      <h2 id="libs">10. 随包带上的库</h2>
-      <p>下面这些库在构建时打进安装包，应用没有给它们配账号或统计地址：Vue 3、Vue Router、Pinia、idb、ECharts、dayjs、Capacitor 6。没有广告 SDK、统计 SDK、推送 SDK、崩溃收集或社交分享 SDK。</p>
+      <h2 id="libs"><span class="n">十</span>随包带上的库</h2>
+      <p>下面这些库在构建时打进安装包，应用没有给它们配账号或统计地址：Vue 3、Vue Router、Pinia、idb、ECharts、dayjs、Capacitor 6。没有广告 SDK、统计 SDK、推送 SDK、崩溃收集或社交分享 SDK。本政策页同样不引入这些库。</p>
 
-      <h2 id="children">11. 儿童</h2>
+      <h2 id="children"><span class="n">十一</span>儿童</h2>
       <p>悦家库存是给建立这份家庭账的人用的物资工具，不是儿童服务，也没有账号。开发者收不到手机里记下的昵称、住址或药品名称。本政策不把应用说成面向儿童，也不宣称某个年龄分级。</p>
 
-      <h2 id="limits">12. 安全边界</h2>
-      <p>本地数据的安全取决于这台手机的锁屏和系统加密。版本 1.0.0 没有加密备份，没有单独的隐私弹窗，设置里的“关于”也没有更新日志。要看这份说明，打开本页。</p>
+      <h2 id="limits"><span class="n">十二</span>安全边界</h2>
+      <p>本地数据的安全取决于这台手机的锁屏和系统加密。版本 1.0.0 没有加密备份，没有单独的隐私弹窗。要看这份说明，打开本页。设置里的“关于”列出版本、著作权人和“零数据采集”那句话，没有政策日志。</p>
 
-      <h2 id="changes">13. 政策变更</h2>
+      <h2 id="changes"><span class="n">十三</span>政策变更</h2>
       <p>如果以后的版本开始发送通知、读取照片，或把数据传到开发者的服务器，会先改本页，并改页首的日期。版本 1.0.0 不会在启动时弹出确认。关于页也没有政策日志。</p>
       <p>2026-05-13 的旧文本把提醒写成了已经存在的能力，并预告了应用里没有的加密备份和启动确认。那些句子从这一版说明里去掉了。</p>
 
-      <h2 id="contact">14. 联系</h2>
+      <h2 id="contact"><span class="n">十四</span>联系</h2>
       <p>著作权人：柴琳。版本 1.0.0 的“关于”和本页都没有列出电子邮箱。应用在 Google Play 上架之后，可以通过商品页的反馈联系。本页的源文件在 <a href="https://github.com/Lin-Chai49/homestock-privacy">github.com/Lin-Chai49/homestock-privacy</a>。</p>
     </article>
 
     <article id="en" lang="en">
       <h2>HomeStock privacy policy</h2>
-      <p>HomeStock (悦家库存) version 1.0.0, package <code>com.chailin.homestock</code>, versionCode 2. Developer: 柴琳. This page applies from 2026-05-13 and was rewritten on 2026-11-01 to match that build. The minimum system is Android 7.0 (minSdk 24). targetSdk is 35.</p>
-      <p>“Not collected” means the developer does not receive it. The app has no account and no login. What you type stays in the on-device database <code>HomeStockDB</code> unless you export a file.</p>
+      <p>HomeStock (悦家库存) version 1.0.0, package <code>com.chailin.homestock</code>, versionCode 2. Developer: 柴琳. This page applies from 2026-05-13 and was rewritten on 2026-11-01 to match that build. The minimum system is Android 7.0 (minSdk 24). targetSdk is 35. <a href="#zh">中文</a></p>
+      <p>“Not collected” means the developer does not receive it. The app has no account and no login. What you type stays in the on-device database <code>HomeStockDB</code> unless you export a file. A record rests in three places only: the characters you type, then HomeStockDB on this phone, then a JSON file if you export one. The developer cannot read the database. The file is not encrypted, and the app does not upload it.</p>
+      <p>The About block says “所有数据本地存储，零数据采集，无网络请求.” The More screen adds a badge, “本地存储 · 零隐私顾虑.” Both mean the developer receives nothing and the app code makes no network request. They do not mean the phone has no local database.</p>
 
       <h3>Database</h3>
-      <p>On first launch the app creates IndexedDB <code>HomeStockDB</code>, version 1. Only this app’s WebView origin can read it. The six stores are <code>items</code>, <code>categories</code>, <code>locations</code>, <code>consumptions</code>, <code>shoppingList</code>, and <code>settings</code>.</p>
-      <p>The entry form stores a name, category, brand, specification, quantity, unit, minimum stock, purchase date, expiry date, price, note, and a storage place. Price is used only for charts on the device. It is not a payment. Each item row also has empty <code>barcode</code> and <code>imageUrl</code> fields. This version’s form does not fill them. The app does not open the camera, does not open the photo library, and does not scan a code.</p>
-      <p>Eight categories ship with the app: food, medicine, daily goods, cleaning, condiments, canned goods, tea and drinks, and other. Twelve places ship with it, such as the fridge and the medicine box. Those are room labels, not GPS. This version’s screens do not add or delete a category or a place. Import can replace both tables. If you file something under medicine, the name and expiry stay on the device. The developer does not receive them and the app does not diagnose anything.</p>
-      <p>A consumption row stores the item name, amount, a scene you pick (breakfast, lunch, daily, and similar labels), an optional note, and the time. A shopping row can store a suggested place name. Those names are fixed labels in the app: food maps to 盒马生鲜, daily goods to 京东超市, medicine to 京东大药房, tea and drinks to 永辉超市. The app does not contact those stores.</p>
+      <p>On first launch the app creates IndexedDB <code>HomeStockDB</code>, version 1, and writes the preset categories, preset places, and one default settings row. Only this app’s WebView origin can read it. The six stores are <code>items</code>, <code>categories</code>, <code>locations</code>, <code>consumptions</code>, <code>shoppingList</code>, and <code>settings</code>. A new item starts with status active. Opening the home screen writes expired onto an active item whose expiry date has passed. Recording the quantity down to 0 writes consumed.</p>
+      <p>The entry form stores a name, category, brand, specification, quantity, unit, minimum stock, purchase date, expiry date, price, note, and a storage place. Price is used only for charts on the device. It is not a payment. Units are a fixed list, including 盒、瓶、袋、克、毫升. Default minimum stock is 1. Four fill-in examples (dairy, produce, bakery, medicine) write a category, place, unit, and expiry onto the form. That still stays on the device.</p>
+      <p>Each item row also has empty <code>barcode</code> and <code>imageUrl</code> fields. This version’s form does not fill them. The app does not open the camera, does not open the photo library, and does not scan a code.</p>
+      <p>Eight categories ship with the app: 食品, 药品, 日用品, 清洁用品, 调味品, 罐头, 茶饮, and 其他. This version’s screens do not add or delete a category. Import can replace the table. If you file something under medicine, the name and expiry stay on the device. The developer does not receive them and the app does not diagnose anything.</p>
+      <p>Twelve places ship with the app. They are room labels, not GPS. The preset description for the fridge says “冰箱主仓 · 0-4°C”, and the freezer says “冰箱冷冻层 · -18°C”. Those are stored sentences, not a thermometer. The names are 冰箱·冷藏, 冰箱·冷冻, 厨房·调料柜, 厨房·常温柜, 厨房·米柜, 厨房·茶柜, 药箱, 卫生间·储物柜, 卫生间·清洁柜, 卧室·衣柜, 客厅·储物柜, and 玄关·鞋柜. This version’s screens do not add or delete a place. Import can replace the table.</p>
+      <p>A consumption row stores the item name, amount, a scene you pick, an optional note, and the time. The seven scenes are 早餐, 上午, 午餐, 下午, 晚餐, 睡前, and 日常. They are labels, not sensors.</p>
+      <p>A shopping row can store a suggested place name. Those names are fixed labels: 食品, 调味品, and 罐头 map to 盒马生鲜; 日用品 and 清洁用品 map to 京东超市; 药品 maps to 京东大药房; 茶饮 and 其他 map to 永辉超市. The app does not contact those stores.</p>
 
       <h3>What settings store</h3>
-      <p>The first-run screen requires a nickname of 2 to 20 characters. The home screen and the More screen show it. Settings can also store a household role (five fixed choices, default 家庭主管), a household size (default 3, range 1 to 20), and an optional address of up to 50 characters. The address is text you type. The app does not declare a location permission and does not read GPS. Theme, list layout, sort, expiry threshold, and minimum-stock ratio are stored in the same <code>settings</code> row, under the key <code>app</code>. <code>onboardedAt</code> is the on-device time when setup finished. Font size and date format have defaults; this version’s settings screen does not edit them.</p>
+      <p>The first-run screen requires a nickname of 2 to 20 characters. The home screen and the More screen show it. The More screen also shows the role and the household size. Settings can store a household role (家庭主管, 家庭主妇/主夫, 双职工, 独居, or 多代同堂; default 家庭主管), a household size (default 3, range 1 to 20), and an optional address of up to 50 characters. The address is text you type. The app does not declare a location permission and does not read GPS.</p>
+      <p>Theme is one of 家居暖色, 深色模式, or 清新自然, default 家居暖色. It only changes colors on the device. List layout is 货架式, 列表式, or 紧凑式, default 货架式. Sort is expiry ascending, expiry descending, name, quantity high to low, or recently updated, default expiry ascending. The expiry threshold defaults to 3 and can be set from 1 to 30. The minimum-stock ratio defaults to 0.2 and can be set from 0.05 to 0.5. Auto-buy does not read that ratio. It reads each item’s own minimum stock. All of this sits in the <code>settings</code> row under the key <code>app</code>. <code>onboardedAt</code> is the on-device time when setup finished. Font size defaults to <code>md</code> and the date format defaults to <code>YYYY-MM-DD</code>. This version’s settings screen does not edit those two.</p>
 
       <h3>Reminder switches</h3>
-      <p>Settings shows seven switches: 临期提醒, 已过期提醒, 库存不足提醒, 购物清单更新, 每周报告（周一上午）, 月度总结（每月初）, and 免打扰时段（22:00-07:00）. Saving writes them into <code>settings.notifications</code>. Version 1.0.0 does not post a system notification. No scheduled job reads the switches, and the home screen does not read them either. The app does not declare <code>POST_NOTIFICATIONS</code>. The quiet-hours clock is stored as 22:00 to 07:00, the settings screen does not edit those two times, and nothing applies them because there is no reminder job.</p>
+      <p>Settings shows seven switches: 临期提醒, 已过期提醒, 库存不足提醒, 购物清单更新, 每周报告（周一上午）, 月度总结（每月初）, and 免打扰时段（22:00-07:00）. Saving writes them into <code>settings.notifications</code>. The weekly report defaults to off. The other six default to on. The quiet-hours clock is stored as 22:00 to 07:00, and the settings screen does not edit those two times.</p>
+      <p>Version 1.0.0 does not post a system notification. No scheduled job reads the switches, and the home screen does not read them either. The app does not declare <code>POST_NOTIFICATIONS</code>. Nothing applies the quiet hours, because there is no reminder job. The add-item screen shows the sentence “将于过期前 N 天自动通知”, where N is the stored threshold, default 3. That sentence is a hint on the form. No job sends a notification from it.</p>
+
+      <h3>On-device calculations</h3>
+      <p>Expiry bands, a days-to-empty estimate from the last 30 days of consumption, the shopping suggestion, and the spend and waste charts are computed on the phone. The app source does not call <code>fetch</code>, XHR, WebSocket, or a beacon.</p>
+      <p>Days until expiry use local midnight. The bands are fixed and do not read the settings threshold: before the expiry date is 已过期; 0 to 2 days is 紧急; 3 to 7 is 临期; 8 to 30 is 关注; more than 30, or a date that does not parse, is 新鲜.</p>
+      <p>Days to empty divides the current quantity by the average daily use. Average daily use is the absolute amount consumed in the last 30 days, divided by 30. If that window has no consumption, the estimate is not a finite number, and this rule alone does not add a shopping row.</p>
+      <p>Auto-buy runs only when you press 同步自动补货 on the shopping screen. It is not a background job. For an active item, a row is added when the quantity is less than or equal to that item’s minimum stock, or when the days-to-empty number is finite and below 7. The row’s source is auto, the suggested place comes from the label table, and the estimated price is the item’s price. An unfinished row with the same name is not duplicated.</p>
 
       <h3>Export, import, demo data, and clear</h3>
       <p>All four actions are under Settings, then 数据管理.</p>
       <ul>
         <li><strong>Export JSON.</strong> The app builds one document in memory. It includes <code>schema</code> (<code>HomeStockDB</code>), <code>version</code>, <code>exportedAt</code>, and every row of the six stores, including the nickname and address. It then starts a download named like <code>homestock-backup-YYYY-MM-DD-HHmm.json</code>. The app does not upload that file. A copy you keep in Downloads stays after you uninstall the app. The file is not encrypted.</li>
-        <li><strong>Import.</strong> You pick a JSON file. If <code>schema</code> is not HomeStockDB, import stops. If it matches, the app clears all six stores and writes the file. That replaces items, categories, locations, and settings, including the nickname and address. One confirmation comes first.</li>
-        <li><strong>Demo data.</strong> The app appends about 20 sample items, their consumption rows, and a few shopping rows. It does not delete your existing items first.</li>
-        <li><strong>Clear all.</strong> After two confirmations, the app deletes items, consumption rows, and the shopping list. It keeps categories, locations, and settings. The nickname, role, household size, and address remain.</li>
+        <li><strong>Import.</strong> One confirmation comes first. You pick a JSON file. If <code>schema</code> is not HomeStockDB, import stops and the app says the backup format is wrong. If it matches, the app clears all six stores and writes the file. That replaces items, categories, locations, and settings, including the nickname and address.</li>
+        <li><strong>Demo data.</strong> The confirmation says it will append about 20 sample items and consumption rows. The app appends sample items, their consumption rows, and a few shopping rows. It does not delete your existing items first.</li>
+        <li><strong>Clear all.</strong> The button’s short line says items, consumption, and the shopping list are removed, and that categories and places stay. After two confirmations, the app deletes items, consumption rows, and the shopping list. It keeps categories, locations, and settings. The nickname, role, household size, and address remain. The second confirmation says the action cannot be undone.</li>
       </ul>
 
       <h3>Permission and backup</h3>
-      <p>The manifest declares one permission, <code>android.permission.INTERNET</code>. Capacitor loads the bundled page in the WebView on an https scheme, and that permission is what allows the local load. <code>usesCleartextTraffic</code> is false, and mixed content is off. The app source does not call <code>fetch</code>, XHR, WebSocket, or a beacon. The manifest does not declare the camera, microphone, location, phone, SMS, contacts, external storage, notifications, or biometrics. The app code does not read the clipboard.</p>
+      <p>The manifest declares one permission, <code>android.permission.INTERNET</code>. Capacitor loads the bundled page in the WebView on an https scheme (<code>androidScheme</code> is https), and that permission is what allows the local load. <code>usesCleartextTraffic</code> is false, and mixed content is off. The manifest does not declare the camera, microphone, location, phone, SMS, contacts, external storage, notifications, or biometrics. The app code does not read the clipboard.</p>
       <p><code>android:allowBackup</code> is false and <code>android:fullBackupContent</code> is false. <code>dataExtractionRules</code> exclude root, database, file, sharedpref, and external from both cloud backup and device transfer. Automatic cloud backup does not take HomeStockDB.</p>
-      <p>The project includes a FileProvider, authority <code>com.chailin.homestock.fileprovider</code>, and it is not exported. The screens in this version do not use it to hand a file to another app. Export is the JSON download above.</p>
+      <p>The project includes a FileProvider, authority <code>com.chailin.homestock.fileprovider</code>, and it is not exported. Its path file lists <code>external-path</code> and <code>cache-path</code>, and both paths are a single dot, so they are not limited to a subdirectory. The screens in this version do not use it to hand a file to another app. Export is the JSON download above. The manifest does not declare an external-storage permission.</p>
       <p>Uninstall removes the app’s WebView storage, including HomeStockDB. It does not remove a JSON file you already saved somewhere else.</p>
 
       <h3>Libraries, children, and the limit of this text</h3>
-      <p>Vue 3, Vue Router, Pinia, idb, ECharts, dayjs, and Capacitor 6 are bundled in the install. The app does not point them at an account or an analytics endpoint. There is no ad, analytics, push, crash, or social SDK.</p>
+      <p>Vue 3, Vue Router, Pinia, idb, ECharts, dayjs, and Capacitor 6 are bundled in the install. The app does not point them at an account or an analytics endpoint. There is no ad, analytics, push, crash, or social SDK. This page does not load those libraries either.</p>
       <p>HomeStock is a household inventory tool for the person who sets it up. It is not a children’s service and it has no account. The developer does not receive the nickname, address, or medicine names stored on the phone. This policy does not assign an age rating.</p>
-      <p>Safety of the on-device data is the phone’s lock screen and encryption. Version 1.0.0 has no encrypted backup, no privacy popup at launch, and no changelog under About. This page is the notice. If a later version starts posting notifications, reading photos, or sending data to the developer, this page and the date at the top will change first. The 2026-05-13 text described reminders and an encrypted backup the app does not have. Those sentences are gone.</p>
+      <p>Safety of the on-device data is the phone’s lock screen and encryption. Version 1.0.0 has no encrypted backup and no privacy popup at launch. This page is the notice. About shows the version, the developer, and the local-storage sentence. It has no policy log. If a later version starts posting notifications, reading photos, or sending data to the developer, this page and the date at the top will change first. The 2026-05-13 text described reminders and an encrypted backup the app does not have. Those sentences are gone.</p>
       <p>Version 1.0.0’s About screen and this page do not list an email address. After the app is on Google Play, use the listing’s feedback. Source of this page: <a href="https://github.com/Lin-Chai49/homestock-privacy">github.com/Lin-Chai49/homestock-privacy</a>.</p>
     </article>
+  </main>
+</div>
+
+<footer>
+  <div class="frame">
+    <p>© 2026 柴琳 · 悦家库存 HomeStock 1.0.0</p>
+    <p>本页说明的是这一版应用的实际行为。源文件在 <a href="https://github.com/Lin-Chai49/homestock-privacy">github.com/Lin-Chai49/homestock-privacy</a>。</p>
   </div>
-</main>
-<footer class="colophon">
-  <div class="wrap">© 2026 柴琳 · 悦家库存 HomeStock 1.0.0 · 本页说明的是这一版应用的实际行为</div>
 </footer>
 </body>
 </html>

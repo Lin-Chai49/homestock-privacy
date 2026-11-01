@@ -42,6 +42,10 @@ REQUIRED = (
     "exportedAt",
     "dataExtractionRules",
     "com.chailin.homestock.fileprovider",
+    "冰箱·冷藏",
+    "同步自动补货",
+    "家庭主妇/主夫",
+    "将于过期前",
 )
 
 BANNED = (
